@@ -1,32 +1,60 @@
-# SOC Automation Lab: Mimikatz Detection & Response Pipeline
+# SOC Automation Home Lab: End-to-End Mimikatz Detection
 
-## 🚀 Overview
-This project demonstrates an end-to-end Security Operations Center (SOC) automation pipeline. It focuses on detecting **Mimikatz** credential dumping attacks on Windows endpoints and automating the enrichment and incident response process.
+[![Project Type: Blue Team](https://img.shields.io/badge/Type-Blue%20Team-blue)](https://github.com/razal369/SOC-Automation-Lab)
+[![MITRE ATT&CK: T1003](https://img.shields.io/badge/MITRE-T1003-red)](https://attack.mitre.org/techniques/T1003/)
+[![Project Status: Completed](https://img.shields.io/badge/Status-Completed-green)](https://github.com/razal369/SOC-Automation-Lab)
+[![Tools Used](https://img.shields.io/badge/Tools-Wazuh%20%7C%20Shuffle%20%7C%20TheHive%20%7C%20VirusTotal-orange)](https://github.com/razal369/SOC-Automation-Lab)
 
-## 🛠️ Technology Stack
-*   **Wazuh (SIEM/XDR)**: For endpoint monitoring, log collection, and initial detection.
-*   **Shuffle (SOAR)**: Orchestration platform to connect various security tools.
-*   **TheHive (Case Management)**: For tracking and managing security incidents.
-*   **VirusTotal (Threat Intel)**: To enrich alerts with file and IP reputation data.
-*   **Windows Sysmon**: For advanced endpoint telemetry.
+## Project Overview
+This laboratory environment demonstrates a complete SOC automation pipeline designed to detect, enrich, and respond to **Mimikatz** credential dumping attacks. By leveraging open-source security tools, the system automatically handles the identification and documentation of threats without manual intervention.
 
-## 🔄 Workflow
-1.  **Detection**: A Mimikatz execution attempt is detected by Wazuh on a monitored Windows endpoint via Sysmon events.
-2.  **Trigger**: Wazuh sends an alert to **Shuffle (SOAR)** via a custom webhook.
-3.  **Enrichment**: Shuffle extracts the file hash (IOC) and queries **VirusTotal** for reputation data.
-4.  **Case Creation**: Shuffle automatically creates a high-priority case in **TheHive**, attaching the enrichment data and relevant logs.
-5.  **Notification**: (Optional) An automated notification is sent to security analysts (e.g., via Email or Slack).
+## System Architecture
+The pipeline follows a structured flow from initial detection on a Windows endpoint to automated enrichment and case management:
 
-## 📊 Key Features
-*   **Automated Triage**: IOCs are automatically enriched before an analyst even sees the alert.
-*   **Centralized Logging**: All telemetry is funneled into Wazuh for correlation.
-*   **Scalable Architecture**: The use of Docker-based deployments for Wazuh and TheHive allows for easy scaling.
+1.  **Windows 11 Endpoint**: Monitored via Wazuh Agent and Sysmon for deep telemetry.
+2.  **Wazuh Manager**: Correlates events and triggers Rule 100002 upon detection.
+3.  **Shuffle SOAR**: Receives the alert via Webhook and orchestrates the response.
+4.  **IOC Extraction**: SHA256 hashes are extracted using advanced regex.
+5.  **Enrichment & Documentation**:
+    *   **VirusTotal**: Automated reputation check of extracted file hashes.
+    *   **TheHive**: Automatic generation of high-priority security alerts.
+6.  **Analyst Review**: Final investigation and closure within TheHive dashboard.
 
-## 📸 Screenshots
-*(Coming soon: Detailed screenshots of the pipeline in action)*
+## Technical Stack
+| Component | Function |
+| :--- | :--- |
+| **Wazuh** | SIEM/XDR - Core detection engine and log aggregator |
+| **Shuffle** | SOAR - Workflow orchestration and automation |
+| **TheHive** | Case Management - Incident tracking and response platform |
+| **VirusTotal API** | Threat Intelligence - Automated IOC enrichment |
+| **Sysmon** | Telemetry - Advanced Windows event logging |
+| **Infrastructure** | Ubuntu 24.04 LTS, ngrok (Tunneling), Docker |
 
-## 🤝 Collaboration
-Feel free to fork this repository, submit PRs, or reach out if you have questions about implementing SOC automation!
+## Detection Logic
+The core detection relies on custom Wazuh rulesets tailored for high-fidelity credential dumping identification:
+
+*   **Rule ID**: 100002
+*   **Severity Level**: 15 (Critical)
+*   **MITRE Mapping**: T1003 (Credential Dumping)
+*   **Condition**: Detection of `win.eventdata.originalFileName = mimikatz.exe` via Sysmon process creation telemetry.
+
+## Automation Pipeline
+The automated workflow ensures rapid response times and consistent data collection:
+1.  **Endpoint Activity**: Mimikatz execution is captured by Sysmon.
+2.  **Detection**: Wazuh Manager identifies the specific attack signature.
+3.  **Webhook Trigger**: A JSON alert is forwarded to Shuffle SOAR.
+4.  **Data Processing**: Shuffle parses the alert, isolating critical file metadata.
+5.  **Intelligence Lookup**: VirusTotal verifies the file's malicious reputation (Verified 200 OK).
+6.  **Incident Logging**: TheHive creates a new alert containing all gathered evidence (Verified 201 Created).
+
+## Repository Structure
+```text
+SOC-Automation-Lab/
+├── config/             # Configuration files for Wazuh & Shuffle
+├── documentation/      # Step-by-step implementation guide
+├── logs/               # Sample detection logs and JSON alerts
+└── README.md           # Project overview and technical details
+```
 
 ---
-**Designed & Built by [MUHAMMED RAZAL TM](https://github.com/razal369)**
+**Maintained by [MUHAMMED RAZAL TM](https://github.com/razal369)**
