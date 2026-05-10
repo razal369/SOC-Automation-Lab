@@ -4,6 +4,7 @@
 [![MITRE ATT&CK: T1003](https://img.shields.io/badge/MITRE-T1003-red)](https://attack.mitre.org/techniques/T1003/)
 [![Project Status: Completed](https://img.shields.io/badge/Status-Completed-green)](https://github.com/razal369/SOC-Automation-Lab)
 [![Tools Used](https://img.shields.io/badge/Tools-Wazuh%20%7C%20Shuffle%20%7C%20TheHive%20%7C%20VirusTotal-orange)](https://github.com/razal369/SOC-Automation-Lab)
+![GitHub](https://img.shields.io/badge/Author-Muhammed%20Razal%20TM-blue)
 
 ## 📌 Project Overview
 This laboratory environment demonstrates a complete **Security Operations Center (SOC) automation pipeline** designed to detect, enrich, and respond to **Mimikatz** credential dumping attacks. By leveraging best-in-class open-source security tools, the system automatically identifies threats, extracts critical IOCs, and documents the incident within a case management platform—all without manual analyst intervention.
@@ -57,6 +58,7 @@ Invoke-RestMethod `
 ## 📁 Repository Structure
 ```text
 SOC-Automation-Lab/
+│
 ├── README.md              # Project overview and technical details
 ├── report/                # Final SOC Automation Report
 │   └── SOC_Automation_Report.pdf
