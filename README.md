@@ -38,23 +38,54 @@ The core detection relies on custom Wazuh rulesets tailored for high-fidelity cr
 *   **MITRE Mapping**: T1003 (Credential Dumping)
 *   **Condition**: Detection of `win.eventdata.originalFileName = mimikatz.exe` via Sysmon process creation telemetry.
 
-## Automation Pipeline
-The automated workflow ensures rapid response times and consistent data collection:
-1.  **Endpoint Activity**: Mimikatz execution is captured by Sysmon.
-2.  **Detection**: Wazuh Manager identifies the specific attack signature.
-3.  **Webhook Trigger**: A JSON alert is forwarded to Shuffle SOAR.
-4.  **Data Processing**: Shuffle parses the alert, isolating critical file metadata.
-5.  **Intelligence Lookup**: VirusTotal verifies the file's malicious reputation (Verified 200 OK).
-6.  **Incident Logging**: TheHive creates a new alert containing all gathered evidence (Verified 201 Created).
+## 🧪 Laboratory Testing
+To validate the end-to-end pipeline, a simulated Mimikatz alert was generated using PowerShell to verify the Shuffle webhook integration and downstream orchestration:
+
+```powershell
+Invoke-RestMethod `
+  -Uri "https://shuffler.io/api/v1/hooks/webhook_xxx" `
+  -Method POST `
+  -Body '{"rule":{"id":"100002","level":15,
+  "description":"Mimikatz Usage Detected"},
+  "agent":{"name":"razal"},
+  "data":{"win":{"eventdata":{
+  "originalFileName":"mimikatz.exe",
+  "hashes":"SHA256=61c0810a..."}}}}' `
+  -ContentType "application/json"
+```
+
+## ✅ Results & Validation
+| Component | Status | Details |
+| :--- | :--- | :--- |
+| **Wazuh Detection** | ✅ SUCCESS | Rule 100002 triggered correctly on original filename |
+| **Shuffle Workflow** | ✅ FINISHED | All orchestration nodes executed successfully |
+| **SHA256 Extraction** | ✅ SUCCESS | File hash captured via regex node |
+| **VirusTotal Check** | ✅ STATUS 200 | Hash identified as malicious via API lookup |
+| **TheHive Alert** | ✅ STATUS 201 | Alert generated with all enrichment data |
+
+## 📚 Key Learnings
+*   **End-to-End Orchestration**: Gained deep experience in building fully automated SOC workflows from scratch.
+*   **SOAR Integration**: Mastered webhook logic and multi-node orchestration using Shuffle.
+*   **Threat Intel Enrichment**: Implemented automated API-based reputation checks via VirusTotal.
+*   **Incident Lifecycle**: Managed the full lifecycle of an alert within TheHive case management platform.
+*   **Custom SIEM Tuning**: Developed custom Wazuh rules with direct mapping to the MITRE ATT&CK framework.
+
+## 🔗 References
+*   [MyDFIR YouTube Channel](https://www.youtube.com/@MyDFIR) - Foundational project inspiration
+*   [Wazuh Documentation](https://documentation.wazuh.com)
+*   [TheHive Project](https://docs.strangebee.com)
+*   [Shuffle SOAR Docs](https://shuffler.io/docs)
+*   [VirusTotal Developer Portal](https://developers.virustotal.com)
 
 ## Repository Structure
 ```text
 SOC-Automation-Lab/
-├── config/             # Configuration files for Wazuh & Shuffle
+├── configs/            # Wazuh & Sysmon configuration files
 ├── documentation/      # Step-by-step implementation guide
-├── logs/               # Sample detection logs and JSON alerts
+├── screenshots/        # Visual evidence of detection and alerts
 └── README.md           # Project overview and technical details
 ```
 
 ---
 **Maintained by [MUHAMMED RAZAL TM](https://github.com/razal369)**
+[LinkedIn](https://www.linkedin.com/in/muhammed-razal-tm) | [Portfolio](https://razal369.github.io/me/)
