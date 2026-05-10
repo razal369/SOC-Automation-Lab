@@ -80,10 +80,13 @@ Invoke-RestMethod `
 ## Repository Structure
 ```text
 SOC-Automation-Lab/
-├── configs/            # Wazuh & Sysmon configuration files
-├── documentation/      # Step-by-step implementation guide
-├── screenshots/        # Visual evidence of detection and alerts
-└── README.md           # Project overview and technical details
+│
+├── README.md           # Project overview and technical details
+├── report/             # Final SOC Automation Report
+│   └── SOC_Automation_Report.pdf
+└── configs/            # Wazuh & Sysmon configuration files
+    ├── ossec.conf
+    └── local_rules.xml
 ```
 
 ---
